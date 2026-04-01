@@ -1,0 +1,17 @@
+Podarilo sa mi vytvorit základnú analýzu aj pomocou grafov. Najprv som si pozrel rozdelenie tried (class distribution). 
+Z grafu je vidieť, že trieda 1 (benign) je častejšia ako trieda 0 (malignant), čiže dataset teda nie je úplne vyvážený, ale rozdiel je malý.
+Potom som sa pozrel na korelačnú maticu a tam bolo vidno, že niektoré vlastnosti sú medzi sebou veľmi silno korelované, napr mean radius, mean perimeter a mean area, to dáva zmysel,
+lebo tieto veci spolu súvisia (väčší nádor má väčší perimeter aj area), niektoré vlastnosti mali naopak slabú alebo skoro žiadnu koreláciu.
+Pri feature importance som si všimol, že nie všetky vlastnosti sú rovnako dôležité, napríklad najviac dôležité boli "worst area" alebo "worst concave points",
+a niektoré mali veľmi malý význam. Tým pádom model by možno vedel fungovať aj s menším počtom vstupov.
+Na histogramom je vidno, že veľa vlastností nemá normálne rozdelenie, ale sú skôr posunuté, hlavne tie error a worst hodnoty...
+Pri pair plote niektoré vlastnosti dokážu celkom dobre oddeliť triedy, napr mean radius alebo mean area, kde sa body trochu separujú.
+
+Pri škálovaní dát som skúšal 3 metódy:
+StandardScaler, kde sa dáta upravili tak, aby mali priemer okolo 0 a podobnú odchýlku. Rozdelenie sa nezmenilo len sa posunulo.
+Pri MinMaxScaler sa všetky hodnoty dostali do intervalu 0 až 1, dáta boli viac "stlačené", hlavne keď tam boli väčšie hodnoty...
+RobustScaler ako posledný bol menej ovplyvnený outliermi, lebo používa medián. Pri boxplotoch pravdepodobne extrémne hodnoty nemali taký veľký vplyv.
+
+Zhrnutie:
+Rôzne škálovania menia dáta rôznym spôsobom. StandardScaler je taký univerzálny, MinMaxScaler je dobrý keď treba hodnoty do rozsahu, 
+a RobustScaler je lepší keď sú v dátach extrémy. Z grafov som vyčítal, že výber škálovania môže ovplyvniť ako budú dáta vyzerať a aj ako sa s nimi bude pracovať ďalej.

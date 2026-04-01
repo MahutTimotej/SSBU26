@@ -1,12 +1,14 @@
-from data_handling_done import Dataset
+from data_handling import Dataset
 
 if __name__ == "__main__":
     dataset_std = Dataset()
     dataset_norm = Dataset()
+    dataset_robust = Dataset()
 
     # split and scale data
     X_train_s, X_test_s, y_train_s, _ = dataset_std.split_data()
-    X_train_n, X_test_n, y_train_n, _ = dataset_std.split_data()
+    X_train_n, X_test_n, y_train_n, _ = dataset_norm.split_data() #fixed norm
+    X_train_r, X_test_r, y_train_r, _ = dataset_robust.split_data()
 
     # standardization
     X_train_standard, _ = dataset_std.scale_data(X_train_s, X_test_s, scale_type='standard')
@@ -19,3 +21,9 @@ if __name__ == "__main__":
     dataset_norm.plot_all_features_before_after_scaling(X_train_n, X_train_norm, scale_type='Normalization')
     dataset_norm.plot_feature_before_after_scaling(X_train_n, X_train_norm, feature_name='mean area')
     dataset_norm.plot_box_plots(scaled_data=X_train_norm, target=y_train_n)
+
+    # robust scaling
+    X_train_robust, _ = dataset_robust.scale_data(X_train_r, X_test_r, scale_type="robust")
+    dataset_robust.plot_all_features_before_after_scaling(X_train_r, X_train_robust, scale_type="Robust Scaling")
+    dataset_robust.plot_feature_before_after_scaling(X_train_r, X_train_robust, feature_name="mean area")
+    dataset_robust.plot_box_plots(scaled_data=X_train_robust, target=y_train_r)
