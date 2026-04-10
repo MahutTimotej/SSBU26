@@ -14,12 +14,23 @@ class BasePlotter:
         - args: Positional arguments for the plotting function.
         - kwargs: Keyword arguments for the plotting function.
         """
-        general_kwargs = {key: kwargs.pop(key, None) for key in ['title', 'xlabel', 'ylabel', 'xticks_rotation', 'yticks', 'yticklabels', 'xticks']}
+        general_kwargs = {
+        key: kwargs.pop(key, None)
+        for key in ['title', 'xlabel', 'ylabel', 'xticks_rotation', 'yticks', 'yticklabels', 'xticks']
+    }
+
+        title = general_kwargs.get("title")
+
         plt.figure(figsize=kwargs.pop('figsize', (10, 6)))
         plot_func(*args, **kwargs)
         self.__apply_plot_labels(general_kwargs)
         plt.tight_layout()
-        plt.show()
+
+        if title:
+            filename = title.replace(" ", "_").replace(":", "").replace("/", "_")
+            plt.savefig(f"outputs/{filename}.png", bbox_inches="tight")
+
+        plt.close()
 
     def __apply_plot_labels(self, general_kwargs):
         """

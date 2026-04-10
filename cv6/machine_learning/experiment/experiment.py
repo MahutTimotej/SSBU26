@@ -5,10 +5,10 @@ from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import StratifiedKFold, train_test_split
 import os
 
-
 from data.data_handling_refactored import DatasetRefactored
 from models.model_optimizer import ModelOptimizer
 from models.model_trainer import ModelTrainer
+
 
 class Experiment:
     """A class to handle the entire experiment of training and evaluating models."""
@@ -36,7 +36,7 @@ class Experiment:
     def __initialize_csv_file(self):
         """Initialize the CSV file with headers."""
         with open(self.accuracies_file, 'w') as file:
-            file.write("Model,Replication,Accuracy,F1 Score,ROC AUC,Best Parameters\n")
+            file.write("Model,Replication,Accuracy,F1 Score,ROC AUC,Precision,Best Parameters\n")
 
     def run(self, X, y):
         """Run the experiment over multiple replications."""
@@ -55,7 +55,7 @@ class Experiment:
         else:
             print(f"Starting replication {replication + 1}/{self.n_replications}.")
         X_resampled, y_resampled = self.__balance_dataset(X, y)
-        
+
         for model_name in self.models_params.keys():
             self.__train_and_evaluate_model(model_name, X_resampled, y_resampled, replication)
 
@@ -75,35 +75,48 @@ class Experiment:
         trainer = ModelTrainer(self.models[model_name], best_params)
 
         # split the resampled data into training and test sets
-        X_train, X_test, y_train, y_test = train_test_split(X_resampled, y_resampled, test_size=0.4)
+        X_train, X_test, y_train, y_test = train_test_split(
+            X_resampled, y_resampled, test_size=0.4
+        )
 
         # scale the data using the DataScaler class
         X_train, X_test = self.datascaler.scale_data(X_train, X_test, scale_type='normalize')
 
         # train and evaluate the model
         trainer.train(X_train, y_train)
-        accuracy, f1, roc_auc, predictions = trainer.evaluate(X_test, y_test)
+        accuracy, f1, roc_auc, precision, predictions = trainer.evaluate(X_test, y_test)
 
-        self.__store_results(model_name, replication, accuracy, f1, roc_auc, best_params)
+        self.__store_results(model_name, replication, accuracy, f1, roc_auc, precision, best_params)
         self.replication_conf_matrices[model_name].append(confusion_matrix(y_test, predictions))
 
-    def __store_results(self, model_name, replication, accuracy, f1, roc_auc, best_params):
+    def __store_results(self, model_name, replication, accuracy, f1, roc_auc, precision, best_params):
         """Store the results of a single evaluation."""
         new_row = pd.DataFrame({
-            'model': model_name,
-            'replication': replication + 1,
-            'accuracy': accuracy,
-            'f1_score': f1,
-            'roc_auc': roc_auc,
+            'model': [model_name],
+            'replication': [replication + 1],
+            'accuracy': [accuracy],
+            'f1_score': [f1],
+            'roc_auc': [roc_auc],
+            'precision': [precision],
             'best_params': [best_params]
         })
         self.results = pd.concat([self.results, new_row], ignore_index=True)
 
         # append the results to the CSV file
         with open(self.accuracies_file, 'a') as file:
-            file.write(f"{model_name},{replication + 1},{accuracy:.4f},{f1:.4f},{roc_auc:.4f},\"{best_params}\"\n")
+            file.write(
+                f"{model_name},{replication + 1},{accuracy:.4f},{f1:.4f},{roc_auc:.4f},{precision:.4f},\"{best_params}\"\n"
+            )
+
+        if self.logger:
+            self.logger.info(
+                f"Model: {model_name}, Replication: {replication + 1}, "
+                f"Accuracy: {accuracy:.4f}, F1: {f1:.4f}, ROC AUC: {roc_auc:.4f}, Precision: {precision:.4f}"
+            )
 
     def __calculate_mean_conf_matrices(self):
-        """Calculate the mean confusion matrisx for each model."""
-        return {model_name: np.mean(np.array(matrices), axis=0)
-                for model_name, matrices in self.replication_conf_matrices.items()}
+        """Calculate the mean confusion matrix for each model."""
+        return {
+            model_name: np.mean(np.array(matrices), axis=0)
+            for model_name, matrices in self.replication_conf_matrices.items()
+        }

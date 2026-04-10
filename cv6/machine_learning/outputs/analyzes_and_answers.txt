@@ -1,0 +1,34 @@
+1.
+Do projektu som pridal ďalší model strojového učenia konkrétne K-Nearest Neighbors (KNN, ktorý som našiel na internete). 
+Tento model funguje na princípe hľadania najbližších susedov a rozhodovania podľa nich (daných susedov).
+
+pre Grid Search som nastavil tieto parametre:
+- n_neighbors: 3, 5, 7, 9 ( t. j. počet susedov)
+- uniform a distance ( váhovanie susedov )
+- euclidean a manhattan ( spôsoby výpočtov vzdialeností )
+
+
+2.
+Nová doplnená metrika PRECISION ukazuje, aký podiel pozitívnych predikcií modelu bol správny. (pridané aj do triedy modeltrainer + výsledkov df + grafy)
+
+
+4.
+Po nastavení až 30 replikácií boli výsledky oveľa stabilnejšie, a teda bolo možné lepšie porovnať modely.
+Z density grafu accuracy je vidieť, že oba modely dosahujú veľmi podobné výsledky okolo hodnoty 0.97. 
+Logistic Regression má mierne širšie rozdelenie smerom k vyšším hodnotám, takže v niektorých prípadoch dosahuje o trošku lepšie výsledky. 
+KNN má naopak mierne užšie rozdelenie, takže jeho výsledky sú "konzistentnejšie".
+A pri F1-score je situácia podobná ako pri accuracy. Oba modely majú veľmi podobné hodnoty, ale Logistic Regression dosahuje mierne vyššie maximá.
+
+Z grafu ROC AUC (roc_auc_density.png) je vidieť, že Logistic Regression dosahuje veľmi vysoké a stabilné hodnoty blízko 1.0, takže veľmi dobre rozlišuje medzi triedami. 
+KNN má rozdelenie širšie a posunuté nižšie, čiže má o niečo horšiu schopnosť rozlišovania.
+
+Pri metrike precision je zaujímavé, že KNN má mierne vyššie hodnoty ako Logistic Regression. 
+To znamená, že KNN robí menej falošne pozitívnych predikcií (FP), čo môže byť niekedy výhoda.
+Z grafov priebehu (replications) je vidieť, že oba modely majú podobný priemer accuracy aj precision (okolo 0.97), ale KNN má väčšie výkyvy medzi jednotlivými replikáciami, 
+zatiaľ čo Logistic Regression je stabilnejšia.
+
+Z confusion matrix vyplýva, že oba modely klasifikujú väčšinu prípadov správne, 
+keďže najvyššie hodnoty sú na diagonále. Logistic Regression má menej false negatives (2.97) ako KNN (4.20), čo znamená, 
+že lepšie zachytáva pozitívne prípady (už konkrétne maligné nádory). KNN má menej FPs.
+
+Celkovo môžem povedať, že Logistic Regression je stabilnejší model s lepším ROC AUC a menším počtom false negatives, zatiaľ čo KNN má trochu lepšiu precision, ale je menej stabilný.

@@ -1,3 +1,4 @@
+import os
 import seaborn as sns
 from matplotlib import pyplot as plt
 from plotting.base_plotter import BasePlotter
@@ -6,7 +7,10 @@ from plotting.base_plotter import BasePlotter
 class ExperimentPlotter(BasePlotter):
     """A class for plotting the results of machine learning experiments."""
 
-    def plot_metric_density(self, results, metrics=('accuracy', 'f1_score', 'roc_auc')):
+    def __init__(self):
+        os.makedirs("outputs", exist_ok=True)
+
+    def plot_metric_density(self, results, metrics=('accuracy', 'f1_score', 'roc_auc', 'precision')):
         """
         Plot density plots for specified metrics.
 
@@ -23,28 +27,26 @@ class ExperimentPlotter(BasePlotter):
                 fill=True,
                 common_norm=False,
                 alpha=0.5,
-                title=f'Density Plot of {metric.capitalize()}',
-                xlabel=metric.capitalize(),
+                title=f'Density Plot of {metric}',
+                xlabel=metric,
                 ylabel='Density',
                 figsize=(10, 6)
             )
 
     def plot_evaluation_metric_over_replications(self, all_metric_results, title, metric_name):
         """
-        Plot accuracies for each model over all replications and display the average accuracy.
+        Plot metric values for each model over all replications and display the average value.
 
         Parameters:
-        - all_metric_results: Dict containing accuracies for each model.
+        - all_metric_results: Dict containing metric values for each model.
         - title: str, title of the plot.
         - metric_name: str, name of the metric to display on the y-axis.
         """
         def plot_func():
-            colors = ['green', 'orange', 'blue']
-            for i, (model_name, values) in enumerate(all_metric_results.items()):
-                plt.plot(values, label=f"{model_name} per replication", alpha=0.5, color=colors[i % len(colors)])
-                avg_accuracy = sum(values) / len(values)
-                plt.axhline(y=avg_accuracy, linestyle='--', color=colors[i % len(colors)], 
-                            label=f"{model_name} average accuracy: {avg_accuracy:.2f}")
+            for model_name, values in all_metric_results.items():
+                plt.plot(values, label=model_name)
+                avg_value = sum(values) / len(values)
+                plt.axhline(y=avg_value, linestyle='--', label=f"{model_name} avg = {avg_value:.2f}")
             plt.legend()
 
         self._BasePlotter__generic_plot(
