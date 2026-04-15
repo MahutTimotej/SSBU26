@@ -99,6 +99,22 @@ def server(input, output, session):
             return utils.generate_statistical_summary(patient_id, stats, patient_data_df)
 
     @output
+    @render.text
+    def avg_value():
+        input.calculate_avg()
+        measurement_type = input.measurement_type() or "Cholesterol"
+
+        values = []
+        for patient in patient_data_dict.get().values():
+            values.extend(patient[measurement_type].dropna().tolist())
+
+        if not values:
+            return "Average couldnt be calculated."
+
+        avg = sum(values) / len(values)
+        return f"Average value: {measurement_type} for all patients: {avg:.2f}"
+
+    @output
     @render.table
     def patient_data():
         # Ensure the table updates on generate_data event and applies filtering

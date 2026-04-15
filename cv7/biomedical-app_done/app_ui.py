@@ -26,6 +26,8 @@ app_ui = ui.page_fluid(
             ui.output_text("txt_status_code"),
             ui.input_file("file1", "Choose CSV File", accept=".csv"),
             ui.input_action_button("add_patient", "Add Patient"),
+            ui.input_action_button("calculate_avg", "Calculate average"),
+            ui.output_text("avg_value"),
             ui.input_text("patient_id", "Select Patient", placeholder="Patient ID", value="Patient 1"),
             ui.input_select("measurement_type", "Select Measurement Type", choices=data.measurements),
             # Make the slider dynamic by rendering it in the server

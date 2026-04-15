@@ -23,7 +23,7 @@ data = {
 
 dynamic_ui_elements = {
     'graph_type': ui.input_radio_buttons("graph_type", "Select Graph Type", 
-                                         choices=["Line Plot", "Histogram"],
+                                         choices=["Line Plot", "Histogram", "Box Plot"],
                                          selected="Line Plot"),
     'stats': ui.input_checkbox_group("stats", "Summary Stats", choices=measurements, selected=measurements)
 }

@@ -13,13 +13,6 @@ from utils.logger import Logger
 
 
 def initialize_models_and_params():
-    """
-    Initializes models and their hyperparameter grids.
-
-    Returns:
-    - models: dict, dictionary of model instances.
-    - param_grids: dict, dictionary of hyperparameter grids.
-    """
     models = {
         "Logistic Regression": LogisticRegression(solver='liblinear'),
         "KNN": KNeighborsClassifier()
@@ -38,19 +31,6 @@ def initialize_models_and_params():
 
 
 def run_experiment(dataset, models, param_grids, logger):
-    """
-    Runs the experiment with the given dataset, models, and hyperparameter grids.
-
-    Parameters:
-    - dataset: Dataset instance, the dataset to use.
-    - models: dict, dictionary of model instances.
-    - param_grids: dict, dictionary of hyperparameter grids.
-    - logger: Logger instance, for logging messages.
-
-    Returns:
-    - experiment: Experiment instance, the experiment object.
-    - results: DataFrame, the results of the experiment.
-    """
     logger.info("Starting the experiment...")
     experiment = Experiment(models, param_grids, n_replications=30, logger=logger)
     results = experiment.run(dataset.data, dataset.target)
@@ -59,18 +39,10 @@ def run_experiment(dataset, models, param_grids, logger):
 
 
 def plot_results(experiment, results, logger):
-    """
-    Plots the results of the experiment.
-
-    Parameters:
-    - experiment: Experiment instance, the experiment object.
-    - results: DataFrame, the results of the experiment.
-    - logger: Logger instance, for logging messages.
-    """
     logger.info("Generating plots for the experiment results...")
     plotter = ExperimentPlotter()
 
-    plotter.plot_metric_density(results)
+    plotter.plot_metric_density(results, metrics=('accuracy',))
 
     plotter.plot_evaluation_metric_over_replications(
         experiment.results.groupby('model')['accuracy'].apply(list).to_dict(),
@@ -91,12 +63,6 @@ def plot_results(experiment, results, logger):
 
 
 def main():
-    """
-    Main function to execute the model training and evaluation pipeline.
-
-    Initializes the dataset, defines models and their parameter grids,
-    and invokes the replication of model training and evaluation.
-    """
     os.makedirs("outputs", exist_ok=True)
 
     logger = Logger(log_file="outputs/application.log")

@@ -62,6 +62,9 @@ def create_plot(patient_id, measurement_type, filtered_data, graph_type):
     elif graph_type == "Histogram":
         ax.hist(filtered_data, bins=15)
 
+    elif graph_type == "Box Plot":
+        ax.boxplot( filtered_data.dropna() )
+
     ax.grid(True, which='both')
     ax.set_title(f"{measurement_type} for {patient_id}")
     ax.set_xlabel("Date" if graph_type == "Line Plot" else "Value Range")
