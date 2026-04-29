@@ -17,9 +17,9 @@ Normalizujte distribúciu datasetu (pre premenné aj vzorku).
 (Vyberte akúkoľvek kombináciu operácií, ktorá je podľa Vás najlepšia).
 
 **Ktoré operácie ste pri normalizácii použili?**
-Sample normalization: # TODO
-Data Transformation:  # TODO
-Data Scaling:         # TODO
+Sample normalization: Normalization by median
+Data Transformation: Square root transformation
+Data Scaling: Auto scaling
 ### Úloha 2 (4b)
 
 Použite ľubovoľné štatistické metódy na analýzu datasetu (napr. t-test, correlations, PCA, PLS-DA, Dendrogram, Heatmap, K-means, RandomForest, ..) 
@@ -27,10 +27,14 @@ Použite ľubovoľné štatistické metódy na analýzu datasetu (napr. t-test, 
 **Uveďte aspoň 4 skutočnosti (z 4 rôznych metód), ktoré ste zistili analýzou datasetu:**
 
 (Napr. Pri použití pearsonovho korelačného koeficientu je najvyššia pozitívna korelácia medzi premennými x a y, a koeficient korelácie je 0.992.)
-1: # TODO
-2: # TODO
-3: # TODO
-4: # TODO
+
+1: Pri použití t-testu bolo pri hranici p-value 0,05 a FDR korekcii nájdených 100 štatisticky významných premenných a 90 premenných nebolo štat. významných. Z toho vyplýva, že medzi skupinou control a patient je viacero rozdielov v NMR spektrálnych binoch.
+
+2: Pri metóde Random Forest vyšiel OOB error 0,06, čo znamená približne 6 % chybovosť klasifikácie. Podľa confussion matrix bolo všetkých 25 vzoriek zo skupiny control zaradených správne. Zo skupiny patient bolo správne zaradených 22 z 25 vzoriek a 3 boli nesprávne.
+
+3: Pri korelačnej analýze pomocou Pearsonovho korelačného koeficientu bola zistená silná pozitívna korelácia medzi premennými Bin.7.62 a Bin.7.58. Korelačný koeficient bol 0,952, čo znamená, že tieto dve spektrálne oblasti sa vo vzorkách menili veľmi podobne.
+
+4: Pri hierarchickej heatmape bolo vidieť rozdielne vzory hodnôt medzi skupinami control a patient. Napríklad pri premennej Bin.8.30 mala vzorka P100b hodnotu 4,04, čo patrilo medzi výrazne vyššie hodnoty. Na heatmape bolo vidieť, že niektoré biny majú vyššie hodnoty najmä u pacientov a iné skôr v kontrolnej skupine. To naznačuje, že metabolomický profil pacientov sa veľmi líši od kontrolnej skupiny...
 
 Vygenerujte report z vykonanej analýzy a celý výsledný zip file odovzdajte ako prílohu k riešeniu zadania.
 
